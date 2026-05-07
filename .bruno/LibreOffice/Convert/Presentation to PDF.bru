@@ -1,0 +1,54 @@
+meta {
+  name: Presentation to PDF
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/office
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+
+}
+
+headers {
+
+}
+
+body:multipart-form {
+  files[]: @file(./sample.pptx)
+  landscape: false
+  nativePageRanges: 
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarks: true
+  exportBookmarksToPdfDestination: false
+  exportPlaceholders: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  pdfUA: false
+  merge: false
+  metadata: 
+  flatten: false
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("lastConvertedFile", "presentation.pdf");
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.headers["content-type"]: contains application/pdf
+}
