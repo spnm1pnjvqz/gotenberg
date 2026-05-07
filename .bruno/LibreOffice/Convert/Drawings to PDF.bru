@@ -1,0 +1,57 @@
+meta {
+  name: Drawings to PDF
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/office
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form {
+  files[]: @file(../../../test-files/sample.odg)
+  landscape: false
+  nativePageRanges: 1-2
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarks: true
+  exportBookmarksToPdfDestination: false
+  exportPlaceholders: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  singlePageSheets: false
+  losslessImageCompression: false
+  quality: 90
+  reduceImageResolution: false
+  maxImageResolution: 300
+  pdfa: PDF/A-1b
+  pdfua: false
+  merge: false
+  metadata: {"Author": "Gotenberg", "Subject": "Drawings to PDF conversion"}
+}
+
+// Convert an ODF Drawing (.odg) or other drawing format to PDF using LibreOffice.
+// Supports additional drawing formats such as .vsd, .vsdx, .svg, .wmf, .emf.
+// 
+// Required:
+//   files[]: The drawing file(s) to convert.
+//
+// Optional:
+//   landscape: Set to true for landscape page orientation.
+//   nativePageRanges: Page ranges to include, e.g. "1-3, 5".
+//   merge: Merge all converted documents into a single PDF.
+//   pdfa: PDF/A compliance level (e.g. PDF/A-1b, PDF/A-2b, PDF/A-3b).
+//   pdfua: Enable PDF/UA (Universal Accessibility) compliance.
