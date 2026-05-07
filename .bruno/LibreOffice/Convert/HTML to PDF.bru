@@ -1,0 +1,50 @@
+meta {
+  name: HTML to PDF (LibreOffice)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/html
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form {
+  files[]: @file(./files/index.html)
+  landscape: false
+  nativePageRanges: 1-5
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarks: true
+  exportBookmarksToPdfDestination: false
+  exportPlaceholders: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  singlePageSheets: false
+  losslessImageCompression: false
+  quality: 90
+  reduceImageResolution: false
+  maxImageResolution: 300
+  pdfa: PDF/A-1b
+  pdfua: false
+  merge: false
+  metadata: {"Author": "Gotenberg", "Subject": "HTML to PDF via LibreOffice"}
+  flatten: false
+}
+
+assert {
+  res.status: eq 200
+  res.headers[content-type]: eq application/pdf
+}
