@@ -1,0 +1,75 @@
+meta {
+  name: Spreadsheet to PDF
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form {
+  files[]: @file(./files/sample.xlsx)
+  landscape: false
+  nativePageRanges: 1-2
+  exportFormFields: true
+  singlePageSheets: false
+  losslessImageCompression: false
+  reduceImageResolution: false
+  quality: 90
+  maxImageResolution: 300
+  pdfa: PDF/A-1b
+  pdfua: false
+  metadata: {"Author": "Gotenberg", "Subject": "Spreadsheet Conversion"}
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:3000
+}
+
+docs {
+  ## Spreadsheet to PDF
+
+  Converts a spreadsheet file (e.g., `.xlsx`, `.ods`, `.csv`) to PDF using LibreOffice.
+
+  ### Supported Formats
+
+  - `.xlsx` — Microsoft Excel (Open XML)
+  - `.xls` — Microsoft Excel (Legacy)
+  - `.ods` — OpenDocument Spreadsheet
+  - `.csv` — Comma-Separated Values
+  - `.tsv` — Tab-Separated Values
+
+  ### Form Fields
+
+  | Field | Type | Description |
+  |---|---|---|
+  | `files[]` | file | The spreadsheet file(s) to convert |
+  | `landscape` | bool | Set page orientation to landscape |
+  | `nativePageRanges` | string | Page ranges to include (e.g., `1-3`, `2-`) |
+  | `exportFormFields` | bool | Export form fields as widgets |
+  | `singlePageSheets` | bool | Fit each sheet onto a single page |
+  | `losslessImageCompression` | bool | Use lossless compression for images |
+  | `reduceImageResolution` | bool | Reduce image resolution in output |
+  | `quality` | int | JPEG quality for images (0-100) |
+  | `maxImageResolution` | int | Max image resolution in DPI |
+  | `pdfa` | string | PDF/A format (e.g., `PDF/A-1b`, `PDF/A-2b`) |
+  | `pdfua` | bool | Enable PDF/UA (Universal Accessibility) |
+  | `metadata` | JSON | PDF metadata key-value pairs |
+
+  ### Example cURL
+
+  ```bash
+  curl -X POST http://localhost:3000/forms/libreoffice/convert \
+    -F files[]=@sample.xlsx \
+    -F landscape=false \
+    -F singlePageSheets=false \
+    -o output.pdf
+  ```
+}
