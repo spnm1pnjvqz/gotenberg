@@ -1,0 +1,70 @@
+meta {
+  name: Document to PDF
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+
+}
+
+headers {
+
+}
+
+body:multipart-form {
+  files[]: @file(./sample.docx)
+  landscape: false
+  nativePageRanges: 
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarksToPdfDestination: false
+  exportBookmarks: true
+  exportBookmarksToNamedDest: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  pdfVersion: 
+  pdfa: 
+  pdfuaCompliance: false
+  merge: false
+  metadata: 
+  waitDelay: 
+  waitForExpression: 
+  emulatedMediaType: screen
+  cookies: 
+  userAgent: 
+  extraHttpHeaders: 
+  failOnHttpStatusCodes: [499,599]
+  failOnResourceHttpStatusCodes: 
+  failOnResourceLoadingFailed: false
+  failOnConsoleExceptions: false
+  downloadFrom: 
+}
+
+script:post-response {
+  // Save the PDF response to a file if the request was successful
+  if (res.status === 200) {
+    console.log('PDF generated successfully');
+    console.log('Content-Type:', res.headers['content-type']);
+  } else {
+    console.log('Error:', res.status, res.body);
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.headers['content-type']: contains application/pdf
+}
