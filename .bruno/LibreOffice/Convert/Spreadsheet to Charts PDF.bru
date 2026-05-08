@@ -1,0 +1,69 @@
+meta {
+  name: Spreadsheet to Charts PDF
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/spreadsheet
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form [
+  {
+    name: files,
+    value: @file(../../../test-assets/sample-charts.xlsx),
+    type: file
+  },
+  {
+    name: exportFormFields,
+    value: false,
+    type: text
+  },
+  {
+    name: singlePageSheets,
+    value: false,
+    type: text
+  },
+  {
+    name: losslessImageCompression,
+    value: true,
+    type: text
+  },
+  {
+    name: quality,
+    value: 90,
+    type: text
+  },
+  {
+    name: reduceImageResolution,
+    value: false,
+    type: text
+  },
+  {
+    name: pdfa,
+    value: PDF/A-1b,
+    type: text
+  },
+  {
+    name: pdfua,
+    value: false,
+    type: text
+  }
+]
+
+script:post-response {
+  // Verify the response is a valid PDF
+  test("Response status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response content type is application/pdf", function() {
+    expect(res.getHeader("Content-Type")).to.include("application/pdf");
+  });
+}
