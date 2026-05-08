@@ -1,0 +1,67 @@
+meta {
+  name: ODT to PDF
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/into/pdf
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+
+}
+
+headers {
+
+}
+
+body:multipart-form {
+  files[]: @file(./files/sample.odt)
+  landscape: false
+  nativePageRanges: 
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarks: true
+  exportBookmarksToPdfDestination: false
+  exportPlaceholders: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  singlePageSheets: false
+  losslessImageCompression: false
+  quality: 90
+  reduceImageResolution: false
+  maxImageResolution: 300
+  pdfa: 
+  pdfua: false
+  merge: false
+  metadata: 
+  flatten: false
+}
+
+script:post-response {
+  // Check that the response is a PDF
+  if (res.status === 200) {
+    const contentType = res.headers['content-type'];
+    expect(contentType).to.include('application/pdf');
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a PDF", function() {
+    expect(res.headers['content-type']).to.include('application/pdf');
+  });
+}
