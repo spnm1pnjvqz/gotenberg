@@ -1,0 +1,65 @@
+meta {
+  name: Writer to PDF
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+
+}
+
+headers {
+
+}
+
+body:multipart-form {
+  files[]: @file(./files/sample.odt)
+  pdfa: PDF/A-1b
+  pdfua: false
+  landscape: false
+  nativePageRanges: 1-2
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarks: true
+  exportBookmarksToPdfDestination: false
+  exportPlaceholders: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  singlePageSheets: false
+  losslessImageCompression: false
+  quality: 90
+  reduceImageResolution: false
+  maxImageResolution: 300
+  password: 
+  flatten: false
+}
+
+script:post-response {
+  const contentType = res.headers['content-type'];
+  const contentDisposition = res.headers['content-disposition'];
+
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Content-Type is application/pdf", function() {
+    expect(contentType).to.include('application/pdf');
+  });
+
+  test("Content-Disposition contains filename", function() {
+    expect(contentDisposition).to.include('filename');
+  });
+}
