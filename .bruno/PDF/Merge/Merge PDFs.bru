@@ -1,0 +1,66 @@
+meta {
+  name: Merge PDFs
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/forms/pdfengines/merge
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form [
+  {
+    name: files,
+    value: @file(../../../test-files/sample1.pdf),
+    type: file
+  },
+  {
+    name: files,
+    value: @file(../../../test-files/sample2.pdf),
+    type: file
+  },
+  {
+    name: pdfa,
+    value: PDF/A-1b,
+    type: text
+  },
+  {
+    name: pdfua,
+    value: false,
+    type: text
+  }
+]
+
+assert [
+  ~res.status: eq 200
+  ~res.headers[content-type]: contains application/pdf
+]
+
+docs {
+  # Merge PDFs
+
+  Merges multiple PDF files into a single PDF document using Gotenberg's PDF engines.
+
+  ## Form Fields
+
+  | Field  | Type   | Description                                      |
+  |--------|--------|--------------------------------------------------|
+  | files  | file[] | Two or more PDF files to merge (order matters)   |
+  | pdfa   | string | Optional: PDF/A format (e.g., PDF/A-1b, PDF/A-2b)|
+  | pdfua  | bool   | Optional: Enable PDF/UA (Universal Accessibility) |
+
+  ## Response
+
+  Returns a merged PDF file as `application/pdf`.
+
+  ## Notes
+
+  - Files are merged in the order they are provided.
+  - Supports PDF/A conversion during merge.
+}
